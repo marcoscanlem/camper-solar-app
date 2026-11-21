@@ -47,7 +47,7 @@ jobs:
 
           if gradle_kts.exists():
               text = gradle_kts.read_text(encoding="utf-8")
-              if "signingConfigs" not in text:
+              if "signingConfigs {" not in text:
                   signing_block = """
               signingConfigs {
                   create("release") {
@@ -66,17 +66,11 @@ jobs:
                   'signingConfig = signingConfigs.getByName("debug")',
                   'signingConfig = signingConfigs.getByName("release")',
               )
-              if 'signingConfig = signingConfigs.getByName("release")' not in text:
-                  text = text.replace(
-                      "buildTypes {\n        release {",
-                      'buildTypes {\n        release {\n            signingConfig = signingConfigs.getByName("release")',
-                      1,
-                  )
               gradle_kts.write_text(text, encoding="utf-8")
 
           elif gradle_groovy.exists():
               text = gradle_groovy.read_text(encoding="utf-8")
-              if "signingConfigs" not in text:
+              if "signingConfigs {" not in text:
                   signing_block = """
               signingConfigs {
                   release {
@@ -94,12 +88,6 @@ jobs:
                   "signingConfig signingConfigs.debug",
                   "signingConfig signingConfigs.release",
               )
-              if "signingConfig signingConfigs.release" not in text:
-                  text = text.replace(
-                      "buildTypes {\n        release {",
-                      "buildTypes {\n        release {\n            signingConfig signingConfigs.release",
-                      1,
-                  )
               gradle_groovy.write_text(text, encoding="utf-8")
           EOF
 
