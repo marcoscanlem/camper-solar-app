@@ -1,4 +1,4 @@
-name: Build Play Store Bundle
+:name: Build Play Store Bundle
 
 on:
   push:
@@ -34,8 +34,12 @@ jobs:
       - name: Decode upload keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > android/app/upload-keystore.jks
+          ls -lh android/app/upload-keystore.jks
+          keytool -list -keystore android/app/upload-keystore.jks -storepass "$SIGNING_STORE_PASSWORD" -alias "$SIGNING_KEY_ALIAS"
 
       - name: Configure release signing in Gradle
         run: |
