@@ -95,6 +95,11 @@ jobs:
               gradle_groovy.write_text(text, encoding="utf-8")
           EOF
 
+      - name: Set minSdk to 24
+        run: |
+          sed -i 's/flutter\.minSdkVersion/24/' android/app/build.gradle*
+          grep -n "minSdk" android/app/build.gradle*
+
       - name: Generate Launcher Icons
         run: flutter pub run flutter_launcher_icons
 
