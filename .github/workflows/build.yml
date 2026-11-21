@@ -21,9 +21,11 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x'
           channel: 'stable'
           cache: true
+
+      - name: Flutter version
+        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -95,13 +97,13 @@ jobs:
               gradle_groovy.write_text(text, encoding="utf-8")
           EOF
 
-      - name: Set minSdk to 24
+      - name: Set SDK levels
         run: |
-          sed -i 's/flutter\.minSdkVersion/24/' android/app/build.gradle*
-          grep -n "minSdk" android/app/build.gradle*
+          sed -i 's/flutter\.minSdkVersion/24/; s/flutter\.targetSdkVersion/36/; s/flutter\.compileSdkVersion/36/' android/app/build.gradle*
+          grep -nE "minSdk|targetSdk|compileSdk" android/app/build.gradle*
 
       - name: Generate Launcher Icons
-        run: flutter pub run flutter_launcher_icons
+        run: dart run flutter_launcher_icons
 
       - name: Build App Bundle
         env:
