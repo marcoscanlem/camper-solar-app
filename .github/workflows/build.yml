@@ -1,4 +1,4 @@
-:name:Build Play Store Bundle
+name: Build Play Store Bundle
 
 on:
   push:
